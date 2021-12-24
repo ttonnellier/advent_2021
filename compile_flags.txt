@@ -1,0 +1,14 @@
+-Wall
+-Wextra
+-Wcast-align
+-Wunused
+-Wpedantic
+-Wformat=2
+-Wduplicated-cond
+-Wduplicated-branches
+-Wuseless-cast
+-Wundef
+-Wlogical-op
+-Wmissing-field-initializers
+-O3
+--std=c++20
