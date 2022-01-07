@@ -1,8 +1,8 @@
+#include <algorithm>
+#include <fstream>
+#include <iostream>
 #include <numeric>
 #include <sstream>
-#include <algorithm>
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 
@@ -12,7 +12,8 @@ bool bingo(const std::vector<std::vector<int>>& card)
 {
     for (auto it = card.begin(); it != card.end(); ++it)
     {
-        unsigned count = std::count_if(it->begin(), it->end(), [](const int& i){ return i == -1;});
+        unsigned count = std::count_if(it->begin(), it->end(), [](const int& i)
+                                       { return i == -1; });
         if (count == it->size())
             return true;
     }
@@ -23,7 +24,8 @@ bool bingo(const std::vector<std::vector<int>>& card)
             transposed[j][i] = card[i][j];
     for (auto it = transposed.begin(); it != transposed.end(); ++it)
     {
-        unsigned count = std::count_if(it->begin(), it->end(), [](const int& i){ return i == -1;});
+        unsigned count = std::count_if(it->begin(), it->end(), [](const int& i)
+                                       { return i == -1; });
         if (count == it->size())
             return true;
     }
@@ -48,37 +50,36 @@ int score(std::vector<std::vector<int>>& card)
     return count;
 }
 
-
 int main()
 {
     constexpr int ROWS = 5;
     constexpr int COLS = 5;
 
     std::vector<std::vector<std::vector<int>>> cards;
-    std::vector<std::vector<int>> card (ROWS, std::vector<int>(COLS, 0));
-    std::vector<int> numbers;
+    std::vector<std::vector<int>>              card(ROWS, std::vector<int>(COLS, 0));
+    std::vector<int>                           numbers;
 
     std::ifstream file("day_04.txt");
-    if ( !file )
+    if (!file)
     {
         std::cerr << "Nope\n";
         return 1;
     }
 
-    int number;
-    char separator;
+    int         number;
+    char        separator;
     std::string first_line;
     std::getline(file, first_line);
     std::stringstream ss(first_line);
     ss >> number;
     numbers.push_back(number);
-    while ( ss >> separator >> number )
+    while (ss >> separator >> number)
         numbers.push_back(number);
 
-    while(!file.eof())
+    while (!file.eof())
     {
         for (auto& outer : card)
-            for (auto& inner: outer)
+            for (auto& inner : outer)
                 file >> inner;
         cards.push_back(card);
     }
@@ -87,33 +88,33 @@ int main()
     std::vector<std::vector<std::vector<int>>> cards_cpy = cards;
     for (auto num : numbers)
     {
-        for (auto& card: cards)
+        for (auto& card : cards)
         {
             cross(card, num);
             if (bingo(card))
             {
-                std::cout << "Part1: " << num*score(card) << std::endl;
+                std::cout << "Part1: " << num * score(card) << std::endl;
                 goto part2;
             }
         }
     }
 
 part2:
-    int i = 0;
+    int  i   = 0;
     auto num = 0;
-    while(cards_cpy.size() > 1)
+    while (cards_cpy.size() > 1)
     {
         num = numbers[i++];
-        for (auto& card: cards_cpy)
+        for (auto& card : cards_cpy)
             cross(card, num);
         cards_cpy.erase(std::remove_if(cards_cpy.begin(), cards_cpy.end(), bingo), cards_cpy.end());
     }
-    while(!bingo(cards_cpy[0]))
+    while (!bingo(cards_cpy[0]))
     {
         num = numbers[i++];
         cross(cards_cpy[0], num);
     }
-    std::cout << "Part2: " << num*score(cards_cpy[0]) << std::endl;
+    std::cout << "Part2: " << num * score(cards_cpy[0]) << std::endl;
 
     return 0;
 }

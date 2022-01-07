@@ -1,11 +1,16 @@
-#include <iostream>
 #include <fstream>
-#include <string>
+#include <iostream>
 #include <map>
+#include <string>
 
 int main()
 {
-    enum direction {forward=1, down=2, up=3};
+    enum direction
+    {
+        forward = 1,
+        down    = 2,
+        up      = 3
+    };
 
     // create a map of direction and register possible values
     std::map<std::string, direction> directions;
@@ -21,19 +26,19 @@ int main()
     }
 
     std::string instruction;
-    int value;
+    int         value;
 
     int horizontal = 0;
     int depth      = 0;
     int aim        = 0;
 
-    while ( file >> instruction >> value )
+    while (file >> instruction >> value)
     {
         switch (directions[instruction])
         {
             case forward:
                 horizontal += value;
-                depth += aim*value;
+                depth += aim * value;
                 break;
             case down:
                 aim += value;
@@ -44,6 +49,6 @@ int main()
         }
     }
     file.close();
-    std::cout << horizontal*depth << std::endl;
+    std::cout << horizontal * depth << std::endl;
     return 0;
 }

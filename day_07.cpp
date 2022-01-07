@@ -1,16 +1,16 @@
-#include <numeric>
+#include <cmath>
+#include <fstream>
 #include <functional>
 #include <iostream>
-#include <fstream>
-#include <map>
 #include <limits>
-#include <cmath>
+#include <map>
+#include <numeric>
 #include <tuple>
 
 std::map<int, uint64_t> read_file(const std::string& filename)
 {
     std::ifstream file(filename);
-    if ( !file )
+    if (!file)
     {
         std::cerr << "Nope\n";
         exit(1);
@@ -18,12 +18,12 @@ std::map<int, uint64_t> read_file(const std::string& filename)
 
     std::map<int, uint64_t> crabs;
 
-    int value;
+    int  value;
     char separator;
 
     file >> value;
     ++crabs[value];
-    while ( file >> separator >> value )
+    while (file >> separator >> value)
         ++crabs[value];
 
     file.close();
@@ -43,7 +43,7 @@ std::tuple<int, unsigned> brute_force(std::map<int, uint64_t>& crabs, std::funct
     {
         auto cost = 0;
         for (auto loop = min_index; loop <= max_index; ++loop)
-            cost += crabs[loop]*cost_fn(loop-idx);
+            cost += crabs[loop] * cost_fn(loop - idx);
         if (cost < lower_cost)
         {
             lower_cost = cost;
@@ -60,12 +60,11 @@ int cost_fn_part1(int in)
 
 int cost_fn_part2(int in)
 {
-    return std::abs(in)*(std::abs(in)+1)/2;
+    return std::abs(in) * (std::abs(in) + 1) / 2;
 }
 
 int main()
 {
-
     auto crabs = read_file("day_07.txt");
 
     auto [part1_idx, part1_cost] = brute_force(crabs, cost_fn_part1);

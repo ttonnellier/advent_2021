@@ -1,17 +1,16 @@
-#include <iostream>
+#include <algorithm>
 #include <fstream>
-#include <vector>
+#include <iostream>
+#include <map>
+#include <stack>
 #include <tuple>
 #include <utility>
-#include <stack>
-#include <algorithm>
-#include <map>
+#include <vector>
 
 std::vector<std::string> read_file(const std::string& filename)
 {
-
     std::ifstream file(filename);
-    if ( !file )
+    if (!file)
     {
         std::cerr << "Nope\n";
         exit(1);
@@ -20,7 +19,7 @@ std::vector<std::string> read_file(const std::string& filename)
     std::vector<std::string> nav_ss;
 
     std::string line;
-    while ( std::getline(file, line) )
+    while (std::getline(file, line))
     {
         nav_ss.push_back(line);
     }
@@ -32,34 +31,33 @@ std::vector<std::string> read_file(const std::string& filename)
 
 bool is_opening(const char& c)
 {
-    return ( c == '{' || c == '(' || c == '<' || c == '[' );
+    return (c == '{' || c == '(' || c == '<' || c == '[');
 }
 
 int main()
 {
-
     auto nav_ss = read_file("day_10.txt");
 
-    const std::map<char, char> matching_char   = { {'{', '}'}, {'[', ']'}, {'<', '>'},  {'(', ')'} };
-    const std::map<char, int> score_corrupted  = { {')', 3},   {']', 57},  {'}', 1197}, {'>', 25137}};
-    const std::map<char, int> score_incomplete = { {')', 1},   {']', 2},   {'}', 3},    {'>', 4}};
+    const std::map<char, char> matching_char    = {{'{', '}'}, {'[', ']'}, {'<', '>'}, {'(', ')'}};
+    const std::map<char, int>  score_corrupted  = {{')', 3}, {']', 57}, {'}', 1197}, {'>', 25137}};
+    const std::map<char, int>  score_incomplete = {{')', 1}, {']', 2}, {'}', 3}, {'>', 4}};
 
-    auto part1 = 0;
+    auto                  part1 = 0;
     std::vector<uint64_t> part2;
 
-    for (const auto& line: nav_ss)
+    for (const auto& line : nav_ss)
     {
         std::stack<char> open;
-        bool corrupted = false;
-        for ( auto c: line )
+        bool             corrupted = false;
+        for (auto c : line)
         {
-            if ( is_opening(c) )
+            if (is_opening(c))
                 open.push(c);
             else
             {
                 auto expected = matching_char.at(open.top());
                 open.pop();
-                if ( expected != c )
+                if (expected != c)
                 {
                     part1 += score_corrupted.at(c);
                     corrupted = true;
@@ -67,10 +65,10 @@ int main()
                 }
             }
         }
-        if ( !corrupted )
+        if (!corrupted)
         {
             uint64_t count = 0;
-            while ( !open.empty() )
+            while (!open.empty())
             {
                 count *= 5;
                 count += score_incomplete.at(matching_char.at(open.top()));
@@ -82,7 +80,7 @@ int main()
     std::cout << "Part1: " << part1 << std::endl;
 
     std::sort(part2.begin(), part2.end());
-    std::cout << "Part2: " << part2[part2.size()/2] << std::endl;
+    std::cout << "Part2: " << part2[part2.size() / 2] << std::endl;
 
     return 0;
 }
